@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
@@ -9,8 +10,11 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Abhir's Portfolio",
+  title: "Abhirami Ramadas | Portfolio",
   description: "Full Stack Developer Portfolio - Windows XP Style",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

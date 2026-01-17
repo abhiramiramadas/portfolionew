@@ -2,134 +2,102 @@
 
 import { useState } from 'react'
 
-interface StickyNoteProps {
-  initialPosition?: { x: number; y: number }
-}
+export function StickyNote() {
+  const [isMinimized, setIsMinimized] = useState(false)
 
-export function StickyNote({ initialPosition = { x: 600, y: 80 } }: StickyNoteProps) {
-  const [position, setPosition] = useState(initialPosition)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [isVisible, setIsVisible] = useState(true)
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.close-btn')) return
-    setIsDragging(true)
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    })
+  if (isMinimized) {
+    return (
+      <button
+        onClick={() => setIsMinimized(false)}
+        className="fixed bottom-[70px] right-2 sm:right-4 z-20 bg-[#FFE4EC] px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-bold border border-[#F9B9C9] shadow-md hover:bg-[#FFD6E0] transition-colors"
+        style={{
+          transform: 'rotate(-1deg)',
+          boxShadow: '2px 2px 5px rgba(0,0,0,0.2)',
+        }}
+      >
+        📝 Note
+      </button>
+    )
   }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return
-    setPosition({
-      x: e.clientX - dragOffset.x,
-      y: e.clientY - dragOffset.y,
-    })
-  }
-
-  const handleMouseUp = () => {
-    setIsDragging(false)
-  }
-
-  if (!isVisible) return null
 
   return (
     <div
-      className="absolute z-40 select-none"
+      className="fixed bottom-[70px] right-2 sm:right-4 z-20 w-[200px] sm:w-[320px] select-text"
       style={{
-        left: position.x,
-        top: position.y,
-        cursor: isDragging ? 'grabbing' : 'grab',
+        transform: 'rotate(2deg)',
       }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
       {/* Sticky Note */}
       <div
-        className="w-72 rounded-sm relative"
+        className="relative bg-[#FFE4EC] shadow-lg"
         style={{
-          background: 'linear-gradient(145deg, #ffe4ec 0%, #ffb8d0 40%, #ffa3c4 100%)',
-          transform: 'rotate(-3deg)',
-          boxShadow: '4px 4px 15px rgba(0,0,0,0.25), 0 0 40px rgba(255,182,193,0.3)',
+          boxShadow: '3px 3px 10px rgba(0,0,0,0.25)',
         }}
       >
-        {/* Decorative washi tape */}
+        {/* Top tape/fold effect */}
         <div
-          className="absolute -top-4 left-1/2 -translate-x-1/2 w-20 h-7 rounded-sm"
+          className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-[#FFE4EC]/80"
           style={{
-            background: 'linear-gradient(90deg, #ffd1dc 0%, #ffb6c1 50%, #ffd1dc 100%)',
-            opacity: 0.85,
-            transform: 'rotate(3deg)',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            background: 'linear-gradient(180deg, rgba(255,228,236,0.6) 0%, rgba(255,228,236,0.9) 100%)',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
           }}
         />
-        
-        {/* Cute pattern overlay */}
-        <div 
-          className="absolute inset-0 opacity-10 pointer-events-none rounded-sm"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #ff69b4 1px, transparent 1px)',
-            backgroundSize: '12px 12px',
-          }}
-        />
-        
-        {/* Close button */}
-        <button
-          className="close-btn absolute top-2 right-2 w-6 h-6 flex items-center justify-center text-pink-400 hover:text-red-400 hover:scale-110 transition-all duration-200 rounded-full hover:bg-pink-200/50"
-          onClick={() => setIsVisible(false)}
-        >
-          <span className="text-lg">✕</span>
-        </button>
+
+        {/* Title bar */}
+        <div className="flex items-center justify-between px-2 py-1 border-b border-[#F9B9C9]/50">
+          <span className="text-[10px] text-[#C45B7A] font-semibold">a message for you &lt;3</span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="w-4 h-4 text-[10px] text-[#C45B7A] hover:bg-[#FFD6E0] rounded flex items-center justify-center"
+              title="Minimize"
+            >
+              −
+            </button>
+          </div>
+        </div>
 
         {/* Content */}
-        <div className="p-5 pt-7 relative">
-          {/* Header with sparkle */}
-          <h3 className="font-bold text-pink-700 mb-3 text-base flex items-center gap-2" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
-            <span className="text-lg">✨</span> 
-            <span className="bg-gradient-to-r from-pink-600 to-pink-400 bg-clip-text text-transparent">How to use</span>
-            <span className="text-lg">💖</span>
-          </h3>
-          
-          <ul className="text-sm text-pink-700 space-y-2" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-400">♡</span>
-              <span><strong className="text-pink-600">Double-click</strong> icons to open</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-400">♡</span>
-              <span><strong className="text-pink-600">Drag</strong> icons around</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-400">♡</span>
-              <span><strong className="text-pink-600">Move</strong> windows by title bar</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-pink-400">♡</span>
-              <span>Use the <strong className="text-pink-600">window buttons</strong></span>
-            </li>
-          </ul>
-          
-          {/* Decorative divider */}
-          <div className="my-3 flex items-center justify-center gap-1">
-            <span className="text-pink-300">·</span>
-            <span className="text-pink-400">✿</span>
-            <span className="text-pink-300">·</span>
-            <span className="text-pink-400">✿</span>
-            <span className="text-pink-300">·</span>
-          </div>
-          
-          <p className="text-sm text-center text-pink-500 font-medium" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
-            ♡ Welcome to my portfolio! ♡
+        <div
+          className="p-2 sm:p-4 text-xs sm:text-base text-[#7A3E55] lowercase"
+          style={{
+            fontFamily: "'PP Mondwest', cursive",
+            lineHeight: '1.6',
+          }}
+        >
+          <p className="mb-1 sm:mb-2">
+            hi i&apos;m <strong>abhi</strong> :)
           </p>
-          
-          {/* Corner decorations */}
-          <span className="absolute bottom-2 right-3 text-pink-300 text-xs">ꕤ</span>
-          <span className="absolute bottom-2 left-3 text-pink-300 text-xs">ꕤ</span>
+
+          <p className="mb-1 sm:mb-2">
+            i build clean websites + mini projects
+          </p>
+
+          <p className="mb-1 sm:mb-2">
+            and i&apos;m currently leveling up in IT + frontend
+          </p>
+
+          <p className="mb-2 sm:mb-3 text-[10px] sm:text-sm">
+            if you like pretty UI, smooth UX, and projects that actually work... you&apos;re in the right place
+          </p>
+
+          <p className="mb-1 sm:mb-2">
+            scroll around & steal some inspiration
+          </p>
+
+          <p className="text-[#994D66] text-[10px] sm:text-xs">
+            (also yes i love minimal design)
+          </p>
         </div>
+
+        {/* Bottom curl/shadow effect */}
+        <div
+          className="absolute -bottom-1 right-2 w-8 h-8"
+          style={{
+            background: 'linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.05) 50%)',
+            transform: 'rotate(0deg)',
+          }}
+        />
       </div>
     </div>
   )

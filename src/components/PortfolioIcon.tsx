@@ -97,7 +97,7 @@ export function PortfolioIcon({
       onMouseDown={handleMouseDown}
       onClick={handleClick}
     >
-      <div className="w-12 h-12 mb-1 drop-shadow-lg transition-transform hover:scale-110 relative">
+      <div className="w-14 h-14 mb-1 drop-shadow-lg transition-all duration-200 hover:scale-115 hover:drop-shadow-xl relative">
         <Image
           src={icon}
           alt={name}
@@ -105,13 +105,15 @@ export function PortfolioIcon({
           className="object-contain"
           draggable={false}
         />
+        {/* Glow effect on hover */}
+        <div className="absolute inset-0 rounded-lg bg-white/0 hover:bg-white/10 transition-all duration-200" />
       </div>
       <span
-        className={`icon-label text-white text-xs text-center px-1 py-0.5 max-w-[90px] break-words ${
-          isSelected ? 'bg-[#0055E5]' : ''
+        className={`icon-label text-white text-xs text-center px-2 py-1 max-w-[90px] break-words rounded-sm backdrop-blur-sm ${
+          isSelected ? 'bg-[#0055E5]/90' : 'bg-black/20'
         }`}
         style={{
-          textShadow: '1px 1px 1px rgba(0,0,0,0.8), -1px -1px 1px rgba(0,0,0,0.8)'
+          textShadow: '1px 1px 2px rgba(0,0,0,0.9), -1px -1px 2px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.5)'
         }}
       >
         {name}
