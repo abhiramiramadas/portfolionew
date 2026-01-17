@@ -1,6 +1,9 @@
 'use client'
 
+
 import Image from 'next/image'
+import { useRef, useState } from 'react'
+import emailjs from 'emailjs-com'
 
 export function AboutContent() {
   return (
@@ -215,19 +218,50 @@ export function ResumeContent() {
 }
 
 export function ContactContent() {
+  const form = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<string | null>(null);
+
+  // TODO: Replace these with your actual EmailJS keys
+  const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
+  const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '';
+  const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '';
+
+  const sendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus(null);
+    if (!form.current) return;
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      setStatus('Email service is not configured.');
+      return;
+    }
+    try {
+      await emailjs.sendForm(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        form.current,
+        EMAILJS_PUBLIC_KEY
+      );
+      setStatus('Message sent!');
+      form.current?.reset();
+    } catch (err) {
+      setStatus('Failed to send. Please try again.');
+    }
+  };
+
   return (
     <div className="p-6 font-sans overflow-y-auto max-h-[400px] bg-white">
       <h1 className="text-xl font-semibold text-gray-800 mb-4">Contact</h1>
       <div className="grid grid-cols-2 gap-4">
         <div className="border border-gray-200 rounded-lg p-4">
           <h2 className="font-medium text-gray-700 mb-3 text-sm">Send a Message</h2>
-          <form className="space-y-3">
-            <input type="text" placeholder="Your Name" className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 text-sm" />
-            <input type="email" placeholder="Your Email" className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 text-sm" />
-            <textarea placeholder="Your Message" rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 resize-none text-sm" />
-            <button className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
+          <form ref={form} onSubmit={sendEmail} className="space-y-3">
+            <input name="user_name" type="text" placeholder="Your Name" required className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 text-sm" />
+            <input name="email" type="email" placeholder="Your Email" required className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 text-sm" />
+            <textarea name="message" placeholder="Your Message" rows={3} required className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-gray-400 resize-none text-sm" />
+            <button type="submit" className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium">
               Send Message
             </button>
+            {status && <p className="text-xs mt-2 text-center text-gray-600">{status}</p>}
           </form>
         </div>
         <div className="border border-gray-200 rounded-lg p-4">
