@@ -7,6 +7,7 @@ import { Window } from '@/components/Window'
 import { StickyNote } from '@/components/StickyNote'
 import { BootScreen } from '@/components/BootScreen'
 import { Clippy } from '@/components/Clippy'
+import { Marquee } from '@/components/Marquee'
 import {
   HomeContent,
   AboutContent,
@@ -169,10 +170,13 @@ export default function Home() {
 
   return (
     <div
-      className="relative w-screen h-screen overflow-hidden"
+      className="relative w-screen h-screen overflow-hidden flex flex-col"
       onClick={handleDesktopClick}
       onContextMenu={handleContextMenu}
     >
+      {/* Marquee Banner */}
+      <Marquee />
+
       {/* Bliss Wallpaper Background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
